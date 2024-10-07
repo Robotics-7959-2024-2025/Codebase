@@ -32,10 +32,7 @@ public class SampleDetectionPipelinePNP extends OpenCvPipeline
     Mat redThresholdMat = new Mat();
     Mat yellowThresholdMat = new Mat();
 
-    Mat morphedBlueThreshold = new Mat();
-    Mat morphedRedThreshold = new Mat();
-    Mat morphedYellowThreshold = new Mat();
-
+    Mat morphedBlueThreshold, morphedRedThreshold, morphedYellowThreshold = new Mat();
     Mat contoursOnPlainImageMat = new Mat();
 
     /*
