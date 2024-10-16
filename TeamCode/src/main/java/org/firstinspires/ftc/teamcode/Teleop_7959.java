@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 @TeleOp(name="Summer OpMode")
-public class SummerOpMode extends LinearOpMode {
+public class Teleop_7959 extends LinearOpMode {
 
     private DcMotor frontLeft = null;
     private DcMotor frontRight = null;
@@ -42,10 +42,10 @@ public class SummerOpMode extends LinearOpMode {
             backRight.setPower(Math.pow(Math.max(Math.min(gamepad1.left_stick_y-gamepad1.left_stick_x,1),-maxVelocity),ctrlPow));
             backLeft.setPower(Math.pow(Math.max(Math.min(gamepad1.left_stick_y+gamepad1.left_stick_x,1),-maxVelocity),ctrlPow));
 
-            frontRight.setPower(gamepad1.right_stick_x*1);
-            frontLeft.setPower(gamepad1.right_stick_x*-1);
-            backRight.setPower(gamepad1.right_stick_x*1);
-            backLeft.setPower(gamepad1.right_stick_x*-1);
+            frontRight.setPower(gamepad1.right_stick_x);
+            frontLeft.setPower(-gamepad1.right_stick_x);
+            backRight.setPower(gamepad1.right_stick_x);
+            backLeft.setPower(-gamepad1.right_stick_x);
         }
     }
 }
