@@ -22,12 +22,18 @@ import com.qualcomm.robotcore.hardware.Servo;
 @Autonomous(name = "Auton Blue Right", group = "Autonomous")
 public class AutonBR extends LinearOpMode {
     public class Lift {
-        private DcMotorEx lift;
+        //mira al derecho del robot
+        private DcMotorEx liftL;
+        private DcMotorEx liftR;
 
         public Lift(HardwareMap hardwareMap) {
-            lift = hardwareMap.get(DcMotorEx.class, "liftMotor");
-            lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            lift.setDirection(DcMotorSimple.Direction.FORWARD);
+            //left forward right reverse (from the front of the bot
+            liftL = hardwareMap.get(DcMotorEx.class, "liftMotorL");
+            liftR = hardwareMap.get(DcMotorEx.class, "liftMotorR");
+            liftL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            liftL.setDirection(DcMotorSimple.Direction.FORWARD);
+            liftR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            liftR.setDirection(DcMotorSimple.Direction.REVERSE);
         }
 
         public class LiftUp implements Action {
@@ -36,16 +42,16 @@ public class AutonBR extends LinearOpMode {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 if (!initialized) {
-                    lift.setPower(0.8);
+                    liftR.setPower(0.8);
                     initialized = true;
                 }
 
-                double pos = lift.getCurrentPosition();
+                double pos = liftR.getCurrentPosition();
                 packet.put("liftPos", pos);
                 if (pos < 3000.0) {
                     return true;
                 } else {
-                    lift.setPower(0);
+                    liftR.setPower(0);
                     return false;
                 }
             }
@@ -60,16 +66,16 @@ public class AutonBR extends LinearOpMode {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 if (!initialized) {
-                    lift.setPower(-0.8);
+                    liftR.setPower(-0.8);
                     initialized = true;
                 }
 
-                double pos = lift.getCurrentPosition();
+                double pos = liftR.getCurrentPosition();
                 packet.put("liftPos", pos);
                 if (pos > 100.0) {
                     return true;
                 } else {
-                    lift.setPower(0);
+                    liftR.setPower(0);
                     return false;
                 }
             }
@@ -79,41 +85,10 @@ public class AutonBR extends LinearOpMode {
         }
     }
 
-    public class Claw {
-        private Servo claw;
-
-        public Claw(HardwareMap hardwareMap) {
-            claw = hardwareMap.get(Servo.class, "claw");
-        }
-
-        public class CloseClaw implements Action {
-            @Override
-            public boolean run(@NonNull TelemetryPacket packet) {
-                claw.setPosition(0.55);
-                return false;
-            }
-        }
-        public Action closeClaw() {
-            return new CloseClaw();
-        }
-
-        public class OpenClaw implements Action {
-            @Override
-            public boolean run(@NonNull TelemetryPacket packet) {
-                claw.setPosition(1.0);
-                return false;
-            }
-        }
-        public Action openClaw() {
-            return new OpenClaw();
-        }
-    }
-
     @Override
     public void runOpMode() {
         Pose2d initialPose = new Pose2d(11.8, 61.7, Math.toRadians(90));
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
-        Claw claw = new Claw(hardwareMap);
         Lift lift = new Lift(hardwareMap);
 
         // vision here that outputs position
@@ -148,7 +123,7 @@ public class AutonBR extends LinearOpMode {
                 .build();
 
         // actions that need to happen on init; for instance, a claw tightening.
-        Actions.runBlocking(claw.closeClaw());
+        //Actions.runBlocking(claw.closeClaw());
 
 
         while (!isStopRequested() && !opModeIsActive()) {
@@ -177,7 +152,6 @@ public class AutonBR extends LinearOpMode {
                 new SequentialAction(
                         trajectoryActionChosen,
                         lift.liftUp(),
-                        claw.openClaw(),
                         lift.liftDown(),
                         trajectoryActionCloseOut
                 )
