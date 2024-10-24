@@ -54,6 +54,40 @@ public class Teleop_7959 extends LinearOpMode {
             backRight.setPower(gamepad1.right_stick_x);
             backLeft.setPower(-gamepad1.right_stick_x);
 
+            if(gamepad1.left_trigger > 0 && !liftL.isBusy() && !liftR.isBusy()) {
+                //moves the arm up
+                telemetry.addData("ARM UP", "true");
+                telemetry.update();
+                liftR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                //tickcount is 537
+                //1460 is about 2.5 revolutions or whatever 1460/537 is
+                //537 encoder ticks = 360 degrees on a motor
+                liftR.setTargetPosition(1460);
+                liftR.setDirection(DcMotor.Direction.REVERSE);
+                liftR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                liftR.setPower(1);
+
+                liftL.setTargetPosition(1460);
+                liftL.setDirection(DcMotor.Direction.REVERSE);
+                liftL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                liftL.setPower(1);
+            }
+
+            if(gamepad1.right_trigger > 0 && !liftL.isBusy() && !liftR.isBusy()){
+                //moves the arm down
+                telemetry.addData("rt working", true);
+                telemetry.update();
+                telemetry.update();
+                liftL.setTargetPosition(0);
+                liftL.setDirection(DcMotor.Direction.FORWARD);
+                liftL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                liftL.setPower(-0.5);
+
+                liftR.setTargetPosition(0);
+                liftR.setDirection(DcMotor.Direction.REVERSE);
+                liftR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                liftR.setPower(1);
+            }
 
 
 
